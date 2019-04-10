@@ -24,8 +24,8 @@
         <br /><br />
         <b-table
           show-empty
-          ref="list_players"
-          :items="myProviderGetPlayers"
+          ref="playersList"
+          :items="providerFetchPlayers"
           :fields="$t('fieldsPlayer')"
           :filter="filter"
           :per-page="perPage"
@@ -116,7 +116,7 @@
       <b-list-group>
         <b-list-group-item
           class="d-flex justify-content-between align-items-center"
-          v-for="(item, index) in getHistory"
+          v-for="(item, index) in player.history"
           v-bind:key="item"
         >
           {{ index }}
@@ -148,7 +148,11 @@
       :title="$t('addFine')"
       hide-footer
     >
-      <b-form @submit="onSubmitUpdate" @reset="onResetUpdate" class="w-100">
+      <b-form
+        @submit.prevent="updatePlayer"
+        @reset="onResetUpdate"
+        class="w-100"
+      >
         <p>{{ fullName }}</p>
         <b-form-group
           id="form-fine-edit-group"
@@ -178,8 +182,6 @@ import axios from "axios";
 import { mapState, mapGetters } from "vuex";
 import store from "@/store/store";
 
-import EventService from "@/services/EventService";
-
 export default {
   data() {
     return {
@@ -190,12 +192,7 @@ export default {
       },
       message: "",
       showMessageError: false,
-      editForm: {
-        uuid: "",
-        first_name: "",
-        last_name: ""
-      },
-      getHistory: [],
+      editForm: this.createFreshPlayerObject(),
       selected: null,
       perPage: 5,
       currentPage: 1,
@@ -208,10 +205,7 @@ export default {
   },
   computed: {
     fullName() {
-      return `${this.editForm.first_name} ${this.editForm.last_name}`;
-    },
-    finesHistory() {
-      return `${this.getHistory}`;
+      return `${this.player.first_name} ${this.player.last_name}`;
     },
     sortOptions() {
       // Create an options list from our fields
@@ -224,7 +218,14 @@ export default {
     ...mapGetters("player", ["isBanker"])
   },
   methods: {
-    myProviderGetPlayers(ctx) {
+    createFreshPlayerObject() {
+      return {
+        uuid: "",
+        first_name: "",
+        last_name: ""
+      };
+    },
+    providerFetchPlayers(ctx) {
       let path = "/players";
       if (ctx.sortBy && !ctx.filter) {
         path = `${path}?_sort=${ctx.sortBy}&_order=${
@@ -250,60 +251,19 @@ export default {
       this.editForm = player;
     },
     editHistory(player) {
-      this.editForm = player;
-      EventService.getHistory(this.editForm.uuid)
-        .then(data => {
-          this.getHistory = data.data.fines;
-        })
-        .catch(error => {
-          this.messageError = `[${error.response.status}] ${
-            error.response.data.message
-          }`;
-          this.showMessageError = true;
-        });
+      store.dispatch("player/fetchHistoryPlayer", player.uuid);
     },
-    addPlayer(payload) {
-      const path = process.env.BaseURL.concat("/players");
-      axios
-        .post(path, payload)
+    updatePlayer() {
+      // NProgress.start();
+      store
+        .dispatch("player/updatePlayer", this.editForm)
         .then(() => {
-          this.message = "Player added!";
-          this.showMessage = true;
+          this.$refs.editPlayerModal.hide();
+          this.$refs.playersList.refresh();
         })
-        .catch(error => {
-          this.messageError = `[${error.response.status}] ${
-            error.response.data.message
-          }`;
-          this.showMessageError = true;
+        .catch(() => {
+          // NProgress.done();
         });
-    },
-    initForm() {
-      this.addPlayerForm.first_name = "";
-      this.addPlayerForm.last_name = "";
-      this.addPlayerForm.total = "";
-      this.editForm.uuid = "";
-      this.editForm.first_name = "";
-      this.editForm.last_name = "";
-    },
-    onSubmit(evt) {
-      evt.preventDefault();
-      this.$refs.addPlayerModal.hide();
-      const payload = {
-        first_name: this.addPlayerForm.first_name,
-        last_name: this.addPlayerForm.last_name
-      };
-      this.addPlayer(payload);
-      this.initForm();
-    },
-    onSubmitUpdate(evt) {
-      evt.preventDefault();
-      this.$refs.editPlayerModal.hide();
-      const payload = {
-        first_name: this.editForm.first_name,
-        last_name: this.editForm.last_name,
-        fine_uuid: this.editForm.fine_uuid
-      };
-      this.updatePlayer(payload, this.editForm.uuid);
     },
     onSubmitSendBill(evt) {
       evt.preventDefault();
@@ -332,7 +292,7 @@ export default {
       axios
         .delete(path)
         .then(() => {
-          this.$refs.list_players.refresh();
+          this.$refs.playersList.refresh();
           this.message = "Bill paid!";
           this.showMessage = true;
         })
@@ -348,7 +308,7 @@ export default {
       axios
         .post(path)
         .then(() => {
-          this.$refs.list_players.refresh();
+          this.$refs.playersList.refresh();
           this.message = "Bills sent!";
           this.showMessage = true;
         })
@@ -357,20 +317,6 @@ export default {
             error.response.data.message
           }`;
           this.showMessageError = true;
-        });
-    },
-    updatePlayer(payload, playerUUID) {
-      const path = process.env.BaseURL.concat(`/players/${playerUUID}`);
-      axios
-        .put(path, payload)
-        .then(() => {
-          this.$refs.list_players.refresh();
-          this.message = "Player updated!";
-          this.showMessage = true;
-        })
-        .catch(error => {
-          this.message = error;
-          this.showMessage = true;
         });
     },
     onResetSendBill(evt) {
@@ -394,7 +340,7 @@ export default {
       axios
         .delete(path)
         .then(() => {
-          this.$refs.list_players.refresh();
+          this.$refs.playersList.refresh();
           this.message = "Player removed!";
           this.showMessage = true;
         })

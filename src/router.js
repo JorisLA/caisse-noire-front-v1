@@ -3,7 +3,7 @@ import Router from "vue-router";
 import store from "@/store/store";
 import Players from "@/views/Players";
 import Home from "@/views/Home";
-// import Fines from '@/components/Fines';
+import Fines from "@/views/Fines";
 import NProgress from "nprogress";
 
 Vue.use(Router);
@@ -40,12 +40,12 @@ const router = new Router({
             // }
           });
       }
+    },
+    {
+      path: "/fines",
+      name: "Fines",
+      component: Fines
     }
-    // {
-    //   path: "/fines",
-    //   name: "Fines",
-    //   component: Fines
-    // }
   ],
   mode: "history"
 });

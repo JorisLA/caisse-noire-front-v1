@@ -16,6 +16,9 @@ export default {
   getHistory(playerId) {
     return apiClient.get(`/bills/${playerId}`);
   },
+  updatePlayer(payload) {
+    return apiClient.put(`/players/${payload["uuid"]}`, payload);
+  },
   signinPlayer(payload) {
     return apiClient.post("/signin", payload);
   },
@@ -24,5 +27,8 @@ export default {
   },
   getTeams() {
     return apiClient.get("/teams");
+  },
+  addFine(payload) {
+    return apiClient.post("/fines", payload);
   }
 };

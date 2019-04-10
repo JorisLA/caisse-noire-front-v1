@@ -6,6 +6,7 @@ export const namespaced = true;
 export const state = {
   players: [],
   player: {},
+  history: {},
   token: "",
   banker: false,
   totalRows: 0,
@@ -22,6 +23,9 @@ export const mutations = {
   },
   SET_PLAYER(state, player) {
     state.player = player;
+  },
+  SET_HISTORY(state, history) {
+    state.history = history;
   },
   SET_TOKEN(state, token) {
     state.token = token;
@@ -40,6 +44,12 @@ export const mutations = {
   },
   SET_LAST_UUID(state, lastUuid) {
     state.lastUuid = lastUuid;
+  },
+  UPDATE_PLAYER(state, payload) {
+    var foundPlayer = state.players.findIndex(
+      player => player.uuid === payload["playerUuid"]
+    );
+    state.players[foundPlayer]["total"] = payload["total"];
   }
 };
 
@@ -56,6 +66,52 @@ export const actions = {
         commit("SET_PLAYER_FINES", response.data.fines);
         commit("SET_LAST_UUID", items[items.length - 1].uuid);
         return response.data.players;
+      })
+      .catch(error => {
+        const notification = {
+          type: "danger",
+          message: "There was a credential problem"
+        };
+        dispatch("notification/add", notification, { root: true });
+        throw error;
+      });
+  },
+  fetchHistoryPlayer({ commit, dispatch }, playerUuid) {
+    return EventService.getHistory(playerUuid)
+      .then(response => {
+        var player = getters.getPlayerByUUID(playerUuid);
+        if (player) {
+          console.log(player);
+          commit("SET_PLAYER", player);
+          commit("SET_HISTORY", response.data.fines);
+        }
+      })
+      .catch(error => {
+        const notification = {
+          type: "danger",
+          message: "There was a credential problem"
+        };
+        dispatch("notification/add", notification, { root: true });
+        throw error;
+      });
+  },
+  updatePlayer({ commit, dispatch }, payload) {
+    EventService.updatePlayer(payload)
+      .then(response => {
+        var player = getters.getPlayerByUUID(payload["uuid"]);
+        if (player) {
+          var tmp = {
+            playerUuid: payload["uuid"],
+            total: response.data.total
+          };
+          commit("UPDATE_PLAYER", tmp);
+
+          const notification = {
+            type: "success",
+            message: "The player has been updated"
+          };
+          dispatch("notification/add", notification, { root: true });
+        }
       })
       .catch(error => {
         const notification = {
@@ -113,5 +169,8 @@ export const getters = {
   },
   isBanker: state => {
     return state.banker;
+  },
+  getPlayerByUUID: state => uuid => {
+    return state.players.find(player => player.uuid === uuid);
   }
 };
