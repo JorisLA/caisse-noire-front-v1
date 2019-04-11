@@ -30,5 +30,14 @@ export default {
   },
   addFine(payload) {
     return apiClient.post("/fines", payload);
-  }
+  },
+  getFines(path) {
+    return apiClient.get(path);
+  },
+  updateFine(payload) {
+    return apiClient.put(`/fines/${payload["uuid"]}`, payload);
+  },
+  deleteFine(payload) {
+    return apiClient.delete(`/fines/${payload["uuid"]}`, payload);
+  },
 };

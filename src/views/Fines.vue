@@ -90,7 +90,7 @@
       :title="$t('addFine')"
       hide-footer
     >
-      <b-form @submit.prevent="addFine" @reset.prevent="onReset" class="w-100">
+      <b-form @submit.prevent="addFine" @reset.prevent="onResetAddFine" class="w-100">
         <b-form-group
           id="form-title-group"
           :label="$t('labelFine')"
@@ -130,7 +130,7 @@
       :title="$t('updateFine')"
       hide-footer
     >
-      <b-form @submit="onSubmitUpdate" @reset="onResetUpdate" class="w-100">
+      <b-form @submit.prevent="updateFine" @reset.prevent="onResetUpdate" class="w-100">
         <b-form-group
           id="form-title-edit-group"
           :label="$t('labelFine')"
@@ -172,8 +172,8 @@
     >
       <p class="my-2">{{ $t("isDeleted", { fine: editForm.label }) }}</p>
       <b-form
-        @submit="onSubmitFineDelete"
-        @reset="onResetFineDelete"
+        @submit.prevent="removeFine"
+        @reset.prevent="onResetFineDelete"
         class="w-100"
       >
         <b-button v-t="'yes'" type="submit" variant="primary"></b-button>
@@ -216,40 +216,36 @@ export default {
       }));
     },
     ...mapGetters("player", ["isBanker"]),
-    ...mapState(["player"])
+    ...mapState(["player"]),
+    ...mapState(["fine"])
   },
   methods: {
     createFreshFineObject() {
       return {
         label: "",
-        cost: ""
+        cost: "",
+        uuid: "",
       };
     },
     myProviderGetFines(ctx) {
-      let path = process.env.BaseURL.concat("/fines");
+      let path = "/fines";
       if (ctx.sortBy && !ctx.filter) {
         path = `${path}?_sort=${ctx.sortBy}&_order=${
           ctx.sortDesc ? "desc" : "asc"
-        }&_currentPage=${ctx.currentPage}&_perPage=${ctx.perPage}`;
+        }&_currentPage=${ctx.currentPage}&_perPage=${ctx.perPage}&_lastUuid=${
+          this.fine.lastUuid
+        }`;
       } else if (ctx.filter) {
         path = `${path}?_filter=${ctx.filter}`;
       } else if (ctx.currentPage) {
         path = `${path}?_currentPage=${ctx.currentPage}&_perPage=${
-          ctx.perPage
-        }`;
+          ctx.perPage}&_lastUuid=${this.fine.lastUuid}`;
       }
-      const promise = axios.get(path);
-      return promise
-        .then(data => {
-          const items = data.data.fines;
-          this.totalRows = data.data.fines[0].full_count;
-          return items;
-        })
-        .catch(() => []);
+      return store.dispatch("fine/fetchFines", path);
     },
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
-      this.totalRows = filteredItems.length;
+      store.dispatch("fine/setTotalRows", filteredItems.length);
       this.currentPage = 1;
     },
     editFine(fine) {
@@ -259,72 +255,44 @@ export default {
       store
         .dispatch("fine/addFine", this.addFineForm)
         .then(() => {
+          this.$refs.addFineModal.hide();
           this.$refs.finesList.refresh();
         })
         .catch(() => {
           // NProgress.done();
         });
     },
-    initForm() {
-      this.editForm.uuid = "";
-      this.editForm.label = "";
-      this.editForm.cost = "";
-    },
-    onSubmitUpdate(evt) {
-      evt.preventDefault();
-      this.$refs.editFineModal.hide();
-      const payload = {
-        label: this.editForm.label,
-        cost: this.editForm.cost
-      };
-      this.updateFine(payload, this.editForm.uuid);
-    },
-    updateFine(payload, fineUUID) {
-      const path = process.env.BaseURL.concat(`/fines/${fineUUID}`);
-      axios
-        .put(path, payload)
+    updateFine() {
+    // NProgress.start();
+      store
+        .dispatch("fine/updateFine", this.editForm)
         .then(() => {
+          this.$refs.editFineModal.hide();
           this.$refs.finesList.refresh();
-          this.message = "Fine updated!";
-          this.showMessage = true;
         })
-        .catch(error => {
-          // eslint-disable-next-line
-          console.error(error);
+        .catch(() => {
+          // NProgress.done();
         });
     },
-    onReset(evt) {
-      evt.preventDefault();
+    removeFine() {
+    // NProgress.start();
+      store
+        .dispatch("fine/deleteFine", this.editForm)
+        .then(() => {
+          this.$refs.fineDeleteModal.hide();
+          this.$refs.finesList.refresh();
+        })
+        .catch(() => {
+          // NProgress.done();
+        });
+    },    
+    onResetAddFine(evt) {
       this.$refs.addFineModal.hide();
     },
     onResetUpdate(evt) {
-      evt.preventDefault();
       this.$refs.editFineModal.hide();
     },
-    removeFine(fineUUID) {
-      const path = process.env.BaseURL.concat(`/fines/${fineUUID}`);
-      axios
-        .delete(path)
-        .then(() => {
-          this.$refs.finesList.refresh();
-          this.message = "Fine removed!";
-          this.showMessage = true;
-        })
-        .catch(error => {
-          // eslint-disable-next-line
-          console.error(error);
-        });
-    },
-    onDeleteFine(fineUuid) {
-      this.removeFine(fineUuid);
-    },
-    onSubmitFineDelete(evt) {
-      evt.preventDefault();
-      this.$refs.fineDeleteModal.hide();
-      this.onDeleteFine(this.editForm.uuid);
-    },
     onResetFineDelete(evt) {
-      evt.preventDefault();
       this.$refs.fineDeleteModal.hide();
     }
   }
