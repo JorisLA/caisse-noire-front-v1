@@ -40,4 +40,10 @@ export default {
   deleteFine(payload) {
     return apiClient.delete(`/fines/${payload["uuid"]}`, payload);
   },
+  sendFines() {
+    return apiClient.post(`/bills`);
+  },
+  paidFines(playerId) {
+    return apiClient.delete(`/bills/${playerId}`);
+  }
 };

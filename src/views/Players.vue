@@ -100,7 +100,7 @@
       title="Confirmation"
     >
       <p v-t="'confirmationBills'" class="my-4"></p>
-      <b-form @submit="onSubmitSendBill" @reset="onResetSendBill" class="w-100">
+      <b-form @submit.prevent="sendBill" @reset.prevent="onResetSendBill" class="w-100">
         <b-button v-t="'yes'" type="submit" variant="primary"></b-button>
         <b-button v-t="'no'" type="reset" variant="danger"></b-button>
       </b-form>
@@ -124,7 +124,7 @@
         </b-list-group-item>
       </b-list-group>
       <ul id="example-1"></ul>
-      <b-form @submit="onResetHistory" class="w-100">
+      <b-form @submit.prevent="onResetHistory" class="w-100">
         <b-button type="submit" variant="primary">Ok</b-button>
       </b-form>
     </b-modal>
@@ -136,7 +136,7 @@
       hide-footer
     >
       <p class="my-2">{{ $t("isPaid", { player: fullName }) }}</p>
-      <b-form @submit="onSubmitBillPaid" @reset="onResetBillPaid" class="w-100">
+      <b-form @submit.prevent="billPaid" @reset.prevent="onResetBillPaid" class="w-100">
         <b-button type="submit" variant="primary">Yes</b-button>
         <b-button type="reset" variant="danger">No</b-button>
       </b-form>
@@ -150,7 +150,7 @@
     >
       <b-form
         @submit.prevent="updatePlayer"
-        @reset="onResetUpdate"
+        @reset.prevent="onResetUpdate"
         class="w-100"
       >
         <p>{{ fullName }}</p>
@@ -205,7 +205,7 @@ export default {
   },
   computed: {
     fullName() {
-      return `${this.player.first_name} ${this.player.last_name}`;
+      return `${this.editForm.first_name} ${this.editForm.last_name}`;
     },
     sortOptions() {
       // Create an options list from our fields
@@ -265,95 +265,42 @@ export default {
           // NProgress.done();
         });
     },
-    onSubmitSendBill(evt) {
-      evt.preventDefault();
-      this.$refs.sendBillModal.hide();
-      this.sendBill();
-    },
-    onSubmitBillPaid(evt) {
-      evt.preventDefault();
-      this.$refs.checkoutPlayerModal.hide();
-      this.billPaid(this.editForm.uuid);
-    },
-    playerBills(playerUUID) {
-      const path = process.env.BaseURL.concat(`/bills/${playerUUID}`);
-      axios
-        .get(path)
-        .then(() => {})
-        .catch(error => {
-          this.messageError = `[${error.response.status}] ${
-            error.response.data.message
-          }`;
-          this.showMessageError = true;
-        });
-    },
     billPaid(playerUUID) {
-      const path = process.env.BaseURL.concat(`/bills/${playerUUID}`);
-      axios
-        .delete(path)
-        .then(() => {
-          this.$refs.playersList.refresh();
-          this.message = "Bill paid!";
-          this.showMessage = true;
-        })
-        .catch(error => {
-          this.messageError = `[${error.response.status}] ${
-            error.response.data.message
-          }`;
-          this.showMessageError = true;
-        });
+        // NProgress.start();
+        store
+          .dispatch("fine/paidFines", this.editForm.uuid)
+          .then(() => {
+            this.$refs.checkoutPlayerModal.hide();
+            this.$refs.playersList.refresh();
+          })
+          .catch(() => {
+            // NProgress.done();
+          });
     },
     sendBill() {
-      const path = process.env.BaseURL.concat("/bills");
-      axios
-        .post(path)
-        .then(() => {
-          this.$refs.playersList.refresh();
-          this.message = "Bills sent!";
-          this.showMessage = true;
-        })
-        .catch(error => {
-          this.messageError = `[${error.response.status}] ${
-            error.response.data.message
-          }`;
-          this.showMessageError = true;
-        });
+        // NProgress.start();
+        store
+          .dispatch("fine/sendFines")
+          .then(() => {
+            this.$refs.sendBillModal.hide();
+            this.$refs.playersList.refresh();
+          })
+          .catch(() => {
+            // NProgress.done();
+          });
     },
-    onResetSendBill(evt) {
-      evt.preventDefault();
+    onResetSendBill() {
       this.$refs.sendBillModal.hide();
     },
-    onResetBillPaid(evt) {
-      evt.preventDefault();
+    onResetBillPaid() {
       this.$refs.checkoutPlayerModal.hide();
     },
-    onResetHistory(evt) {
-      evt.preventDefault();
+    onResetHistory() {
       this.$refs.playerHistoryModal.hide();
     },
-    onResetUpdate(evt) {
-      evt.preventDefault();
+    onResetUpdate() {
       this.$refs.editPlayerModal.hide();
     },
-    removePlayer(playerUUID) {
-      const path = process.env.BaseURL.concat(`/players/${playerUUID}`);
-      axios
-        .delete(path)
-        .then(() => {
-          this.$refs.playersList.refresh();
-          this.message = "Player removed!";
-          this.showMessage = true;
-        })
-        .catch(error => {
-          this.messageError = `[${error.response.status}] ${
-            error.response.data.message
-          }`;
-          this.showMessageError = true;
-        });
-    },
-    onDeletePlayer(player) {
-      this.removePlayer(player.uuid);
-    }
   }
 };
 </script>

@@ -81,7 +81,6 @@ export const actions = {
       .then(response => {
         var player = getters.getPlayerByUUID(playerUuid);
         if (player) {
-          console.log(player);
           commit("SET_PLAYER", player);
           commit("SET_HISTORY", response.data.fines);
         }
@@ -145,7 +144,7 @@ export const actions = {
     return EventService.signinPlayer(player)
       .then(response => {
         axios.defaults.headers.common["x-access-token"] = response.data.token;
-        // commit("SET_PLAYER", player);
+        commit("SET_PLAYER", player);
         commit("SET_TOKEN", response.data.token);
         commit("SET_BANKER", response.data.banker);
       })

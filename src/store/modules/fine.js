@@ -131,6 +131,42 @@ export const actions = {
         throw error;
       });
   },
+  sendFines({ commit, dispatch }) {
+    return EventService.sendFines()
+      .then(() => {
+        const notification = {
+          type: "success",
+          message: "Fines has been sent"
+        };
+        dispatch("notification/add", notification, { root: true });
+      })
+      .catch(error => {
+        const notification = {
+          type: "danger",
+          message: "There was a credential problem"
+        };
+        dispatch("notification/add", notification, { root: true });
+        throw error;
+      });
+  },
+  paidFines({ commit, dispatch }, playerUuid) {
+    return EventService.paidFines(playerUuid)
+      .then(() => {
+        const notification = {
+          type: "success",
+          message: "Fines has been sent"
+        };
+        dispatch("notification/add", notification, { root: true });
+      })
+      .catch(error => {
+        const notification = {
+          type: "danger",
+          message: "There was a credential problem"
+        };
+        dispatch("notification/add", notification, { root: true });
+        throw error;
+      });
+  },
 };
 
 export const getters = {
