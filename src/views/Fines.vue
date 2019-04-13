@@ -90,7 +90,11 @@
       :title="$t('addFine')"
       hide-footer
     >
-      <b-form @submit.prevent="addFine" @reset.prevent="onResetAddFine" class="w-100">
+      <b-form
+        @submit.prevent="addFine"
+        @reset.prevent="onResetAddFine"
+        class="w-100"
+      >
         <b-form-group
           id="form-title-group"
           :label="$t('labelFine')"
@@ -130,7 +134,11 @@
       :title="$t('updateFine')"
       hide-footer
     >
-      <b-form @submit.prevent="updateFine" @reset.prevent="onResetUpdate" class="w-100">
+      <b-form
+        @submit.prevent="updateFine"
+        @reset.prevent="onResetUpdate"
+        class="w-100"
+      >
         <b-form-group
           id="form-title-edit-group"
           :label="$t('labelFine')"
@@ -184,7 +192,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import { mapState, mapGetters } from "vuex";
 import store from "@/store/store";
 
@@ -210,10 +217,12 @@ export default {
   computed: {
     sortOptions() {
       // Create an options list from our fields
-      return this.fields.filter(f => f.sortable).map(f => ({
-        text: f.label,
-        value: f.key
-      }));
+      return this.fields
+        .filter(f => f.sortable)
+        .map(f => ({
+          text: f.label,
+          value: f.key
+        }));
     },
     ...mapGetters("player", ["isBanker"]),
     ...mapState(["player"]),
@@ -224,7 +233,7 @@ export default {
       return {
         label: "",
         cost: "",
-        uuid: "",
+        uuid: ""
       };
     },
     myProviderGetFines(ctx) {
@@ -239,7 +248,8 @@ export default {
         path = `${path}?_filter=${ctx.filter}`;
       } else if (ctx.currentPage) {
         path = `${path}?_currentPage=${ctx.currentPage}&_perPage=${
-          ctx.perPage}&_lastUuid=${this.fine.lastUuid}`;
+          ctx.perPage
+        }&_lastUuid=${this.fine.lastUuid}`;
       }
       return store.dispatch("fine/fetchFines", path);
     },
@@ -263,7 +273,7 @@ export default {
         });
     },
     updateFine() {
-    // NProgress.start();
+      // NProgress.start();
       store
         .dispatch("fine/updateFine", this.editForm)
         .then(() => {
@@ -275,7 +285,7 @@ export default {
         });
     },
     removeFine() {
-    // NProgress.start();
+      // NProgress.start();
       store
         .dispatch("fine/deleteFine", this.editForm)
         .then(() => {
@@ -285,14 +295,14 @@ export default {
         .catch(() => {
           // NProgress.done();
         });
-    },    
-    onResetAddFine(evt) {
+    },
+    onResetAddFine() {
       this.$refs.addFineModal.hide();
     },
-    onResetUpdate(evt) {
+    onResetUpdate() {
       this.$refs.editFineModal.hide();
     },
-    onResetFineDelete(evt) {
+    onResetFineDelete() {
       this.$refs.fineDeleteModal.hide();
     }
   }

@@ -3,6 +3,7 @@ import Router from "vue-router";
 import store from "@/store/store";
 import Players from "@/views/Players";
 import Home from "@/views/Home";
+import Statistic from "@/views/Statistic";
 import Fines from "@/views/Fines";
 import NProgress from "nprogress";
 
@@ -15,11 +16,6 @@ const router = new Router({
       name: "Reception",
       component: Home
     },
-    // {
-    //   path: "/home",
-    //   name: "Home",
-    //   component: Home
-    // },
     {
       path: "/players",
       name: "Players",
@@ -45,6 +41,11 @@ const router = new Router({
       path: "/fines",
       name: "Fines",
       component: Fines
+    },
+    {
+      path: "/statistic",
+      name: "Statistic",
+      component: Statistic
     }
   ],
   mode: "history"

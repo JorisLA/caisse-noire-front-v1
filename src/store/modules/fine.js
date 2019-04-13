@@ -30,9 +30,7 @@ export const mutations = {
     state.fines[foundFine]["cost"] = payload["cost"];
   },
   DELETE_FINE(state, fineToRemove) {
-    state.fines = state.fines.filter(
-      fine => fine.id !== fineToRemove.id
-    );
+    state.fines = state.fines.filter(fine => fine.id !== fineToRemove.id);
   }
 };
 
@@ -68,7 +66,7 @@ export const actions = {
           var tmp = {
             fineUuid: payload["uuid"],
             label: response.data.label,
-            cost: response.data.cost,
+            cost: response.data.cost
           };
           commit("UPDATE_FINE", tmp);
 
@@ -117,9 +115,9 @@ export const actions = {
         const items = response.data.fines;
         commit("SET_FINES", items);
         commit("SET_TOTAL_ROWS", response.data.full_count);
-        if(items.length > 0) {
-            commit("SET_LAST_UUID", items[items.length - 1].uuid);
-        }        
+        if (items.length > 0) {
+          commit("SET_LAST_UUID", items[items.length - 1].uuid);
+        }
         return items;
       })
       .catch(error => {
@@ -131,7 +129,7 @@ export const actions = {
         throw error;
       });
   },
-  sendFines({ commit, dispatch }) {
+  sendFines({ dispatch }) {
     return EventService.sendFines()
       .then(() => {
         const notification = {
@@ -149,12 +147,12 @@ export const actions = {
         throw error;
       });
   },
-  paidFines({ commit, dispatch }, playerUuid) {
+  paidFines({ dispatch }, playerUuid) {
     return EventService.paidFines(playerUuid)
       .then(() => {
         const notification = {
           type: "success",
-          message: "Fines has been sent"
+          message: "Fines has been paid"
         };
         dispatch("notification/add", notification, { root: true });
       })
@@ -166,11 +164,11 @@ export const actions = {
         dispatch("notification/add", notification, { root: true });
         throw error;
       });
-  },
+  }
 };
 
 export const getters = {
-    getFineByUUID: state => uuid => {
-        return state.fines.find(fine => fine.uuid === uuid);
-    }
+  getFineByUUID: state => uuid => {
+    return state.fines.find(fine => fine.uuid === uuid);
+  }
 };

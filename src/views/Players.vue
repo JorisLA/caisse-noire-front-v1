@@ -100,7 +100,11 @@
       title="Confirmation"
     >
       <p v-t="'confirmationBills'" class="my-4"></p>
-      <b-form @submit.prevent="sendBill" @reset.prevent="onResetSendBill" class="w-100">
+      <b-form
+        @submit.prevent="sendBill"
+        @reset.prevent="onResetSendBill"
+        class="w-100"
+      >
         <b-button v-t="'yes'" type="submit" variant="primary"></b-button>
         <b-button v-t="'no'" type="reset" variant="danger"></b-button>
       </b-form>
@@ -136,7 +140,11 @@
       hide-footer
     >
       <p class="my-2">{{ $t("isPaid", { player: fullName }) }}</p>
-      <b-form @submit.prevent="billPaid" @reset.prevent="onResetBillPaid" class="w-100">
+      <b-form
+        @submit.prevent="billPaid"
+        @reset.prevent="onResetBillPaid"
+        class="w-100"
+      >
         <b-button type="submit" variant="primary">Yes</b-button>
         <b-button type="reset" variant="danger">No</b-button>
       </b-form>
@@ -178,7 +186,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import { mapState, mapGetters } from "vuex";
 import store from "@/store/store";
 
@@ -265,29 +272,29 @@ export default {
           // NProgress.done();
         });
     },
-    billPaid(playerUUID) {
-        // NProgress.start();
-        store
-          .dispatch("fine/paidFines", this.editForm.uuid)
-          .then(() => {
-            this.$refs.checkoutPlayerModal.hide();
-            this.$refs.playersList.refresh();
-          })
-          .catch(() => {
-            // NProgress.done();
-          });
+    billPaid() {
+      // NProgress.start();
+      store
+        .dispatch("fine/paidFines", this.editForm.uuid)
+        .then(() => {
+          this.$refs.checkoutPlayerModal.hide();
+          this.$refs.playersList.refresh();
+        })
+        .catch(() => {
+          // NProgress.done();
+        });
     },
     sendBill() {
-        // NProgress.start();
-        store
-          .dispatch("fine/sendFines")
-          .then(() => {
-            this.$refs.sendBillModal.hide();
-            this.$refs.playersList.refresh();
-          })
-          .catch(() => {
-            // NProgress.done();
-          });
+      // NProgress.start();
+      store
+        .dispatch("fine/sendFines")
+        .then(() => {
+          this.$refs.sendBillModal.hide();
+          this.$refs.playersList.refresh();
+        })
+        .catch(() => {
+          // NProgress.done();
+        });
     },
     onResetSendBill() {
       this.$refs.sendBillModal.hide();
@@ -300,7 +307,7 @@ export default {
     },
     onResetUpdate() {
       this.$refs.editPlayerModal.hide();
-    },
+    }
   }
 };
 </script>

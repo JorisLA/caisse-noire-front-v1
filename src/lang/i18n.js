@@ -68,8 +68,8 @@ const messages = {
     links: [
       {
         id: 0,
-        text: "Home",
-        page: "/home"
+        text: "Statistic",
+        page: "/statistic"
       },
       {
         id: 1,
@@ -157,8 +157,8 @@ const messages = {
     links: [
       {
         id: 0,
-        text: "Accueil",
-        page: "/home"
+        text: "Statistiques",
+        page: "/statistic"
       },
       {
         id: 1,

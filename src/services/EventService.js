@@ -45,5 +45,8 @@ export default {
   },
   paidFines(playerId) {
     return apiClient.delete(`/bills/${playerId}`);
+  },
+  getStatistics() {
+    return apiClient.get(`/statistic`);
   }
 };
