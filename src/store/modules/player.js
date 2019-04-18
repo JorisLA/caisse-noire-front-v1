@@ -149,10 +149,17 @@ export const actions = {
         commit("SET_BANKER", response.data.banker);
       })
       .catch(error => {
-        const notification = {
+        var notification = {};
+        notification = {
           type: "danger",
           message: "There was a credential problem"
         };
+        if (error.response.status == 404) {
+          notification = {
+            type: "danger",
+            message: "This account does not exist"
+          };
+        }
         dispatch("notification/add", notification, { root: true });
         throw error;
       });

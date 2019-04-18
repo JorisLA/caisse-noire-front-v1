@@ -13,14 +13,13 @@ export const mutations = {
 };
 
 export const actions = {
-  fetchStatistics({ dispatch }) {
+  fetchStatistics({ commit, dispatch }) {
     return EventService.getStatistics()
       .then(response => {
+        commit("ADD_STATISTICS", response.data.teams);
         return response.data;
-        // commit("ADD_STATISTICS", response.data.teams);
       })
       .catch(error => {
-        console.log(error.response.status);
         if (error.response.status == 404) {
           return error.response.data;
         }
