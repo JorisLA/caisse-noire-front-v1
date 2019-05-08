@@ -13,17 +13,23 @@ export default {
   getPlayers(path) {
     return apiClient.get(path);
   },
-  getHistory(playerId) {
-    return apiClient.get(`/bills/${playerId}`);
-  },
   updatePlayer(payload) {
     return apiClient.put(`/players/${payload["uuid"]}`, payload);
   },
   signinPlayer(payload) {
-    return apiClient.post("/signin", payload);
+    return apiClient.post("/players/signin", payload);
   },
   signupPlayer(payload) {
-    return apiClient.post("/signup", payload);
+    return apiClient.post("/players/signup", payload);
+  },
+  sendFines() {
+    return apiClient.post(`/players/fines`);
+  },
+  paidFines(playerId) {
+    return apiClient.delete(`/players/${playerId}/fine`);
+  },
+  getHistory(playerId) {
+    return apiClient.get(`/players/${playerId}/fine`);
   },
   getTeams() {
     return apiClient.get("/teams");
@@ -40,13 +46,7 @@ export default {
   deleteFine(payload) {
     return apiClient.delete(`/fines/${payload["uuid"]}`, payload);
   },
-  sendFines() {
-    return apiClient.post(`/bills`);
-  },
-  paidFines(playerId) {
-    return apiClient.delete(`/bills/${playerId}`);
-  },
   getStatistics() {
-    return apiClient.get(`/statistic`);
+    return apiClient.get(`/statistics`);
   }
 };

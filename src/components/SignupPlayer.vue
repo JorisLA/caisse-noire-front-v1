@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-modal
-      ref="addUserModal"
+      ref="TheSignupUserModal"
       id="TheSignup-modal"
       :title="$t('signupTitle')"
       hide-footer
@@ -129,6 +129,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import store from "@/store/store";
 
 export default {
@@ -145,6 +146,7 @@ export default {
       TheSignupUserForm: this.createFreshPlayerObject()
     };
   },
+  computed: mapState(["player"]),
   methods: {
     createFreshPlayerObject() {
       return {
@@ -157,7 +159,6 @@ export default {
       };
     },
     TheSignupPlayer() {
-      this.$refs.addUserModal.hide();
       if (this.TheSignupUserForm.get_team) {
         delete this.TheSignupUserForm["add_team"];
       } else {
@@ -166,13 +167,13 @@ export default {
       store
         .dispatch("player/signupPlayer", this.TheSignupUserForm)
         .then(() => {
-          // this.$refs.confirmationTheSignup.show();
+          this.$refs.TheSignupUserModal.hide();
           this.TheSignupUserForm = this.createFreshPlayerObject();
         })
         .catch(() => {});
     },
     onReset() {
-      this.$refs.addUserModal.hide();
+      this.$refs.TheSignupUserModal.hide();
       this.TheSignupUserForm = this.createFreshPlayerObject();
     }
   }
