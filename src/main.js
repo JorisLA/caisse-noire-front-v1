@@ -10,13 +10,15 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faCog,
   faGlobeEurope,
-  faPlusCircle
+  faPlusCircle,
+  faEllipsisH
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 library.add(faCog);
 library.add(faGlobeEurope);
 library.add(faPlusCircle);
+library.add(faEllipsisH);
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
