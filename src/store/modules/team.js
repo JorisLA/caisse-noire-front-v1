@@ -9,6 +9,9 @@ export const state = {
 export const mutations = {
   ADD_TEAMS(state, teams) {
     state.teams = teams;
+  },
+  DELETE_TEAM(state) {
+    state.teams.length = 0;
   }
 };
 
@@ -26,7 +29,15 @@ export const actions = {
         dispatch("notification/add", notification, { root: true });
         throw error;
       });
+  },
+  remove({ commit }, team) {
+    console.log(team);
+    commit("DELETE_TEAM");
   }
 };
 
-export const getters = {};
+export const getters = {
+  getTeam: state => {
+    return state.teams[0] ? state.teams[0]["text"] : "Black Box";
+  }
+};

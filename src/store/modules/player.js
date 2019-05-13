@@ -164,8 +164,13 @@ export const actions = {
         throw error;
       });
   },
-  signoutPlayer({ commit }) {
+  signoutPlayer({ commit, dispatch }) {
     commit("REMOVE_TOKEN");
+    var team = {};
+    team = {
+      message: "team"
+    };
+    dispatch("team/remove", team, { root: true });
   }
 };
 
