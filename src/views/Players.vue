@@ -38,15 +38,39 @@
           }}</template>
           <template slot="total" slot-scope="row">{{ row.value }}</template>
           <template slot="actions" slot-scope="row">
-            <b-button
-              v-if="isBanker == true"
-              v-b-modal.player-edit-modal
-              @click.stop="editPlayer(row.item)"
-              class="mr-1"
-              size="sm"
-            >
-              <font-awesome-icon class="fa-1x" icon="ellipsis-h" />
-            </b-button>
+            <b-dropdown right size="sm">
+              <template slot="button-content">
+                <font-awesome-icon class="fa-1x" icon="ellipsis-h" />
+              </template>
+              <b-dropdown-item>
+                <b-button
+                  v-t="'addFine'"
+                  v-if="isBanker == true"
+                  variant="success"
+                  v-b-modal.player-update-modal
+                  @click.stop="editPlayer(row.item)"
+                >
+                </b-button>
+              </b-dropdown-item>
+              <b-dropdown-item>
+                <b-button
+                  v-t="'history'"
+                  v-b-modal.player-history-modal
+                  @click.stop="editHistory(row.item)"
+                >
+                </b-button>
+              </b-dropdown-item>
+              <b-dropdown-item>
+                <b-button
+                  v-t="'paidFine'"
+                  v-if="isBanker == true"
+                  variant="danger"
+                  v-b-modal.player-checkout-modal
+                  @click.stop="editPlayer(row.item)"
+                >
+                </b-button>
+              </b-dropdown-item>
+            </b-dropdown>
             <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->
           </template>
         </b-table>
@@ -72,33 +96,6 @@
         </b-row>
       </div>
     </div>
-
-    <b-modal ref="editPlayer" id="player-edit-modal" size="sm" ok-only hide-footer>
-      <b-button-group class="ml-5" size="sm" vertical>
-        <b-button
-          v-t="'addFine'"
-          v-if="isBanker == true"
-          variant="success"
-          v-b-modal.player-update-modal
-          @click.stop="editPlayer(row.item)"
-        >
-        </b-button>
-        <b-button
-          v-t="'history'"
-          v-b-modal.player-history-modal
-          @click.stop="editHistory(row.item)"
-        >
-        </b-button>
-        <b-button
-          v-t="'paidFine'"
-          v-if="isBanker == true"
-          variant="danger"
-          v-b-modal.player-checkout-modal
-          @click.stop="editPlayer(row.item)"
-        >
-        </b-button>
-      </b-button-group>
-    </b-modal>
 
     <b-modal
       ref="sendBillModal"
