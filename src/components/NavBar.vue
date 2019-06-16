@@ -2,10 +2,13 @@
   <div>
     <SignupPlayer :teams="teams"></SignupPlayer>
     <SigninPlayer></SigninPlayer>
-    <b-navbar toggleable="lg" type="light" variant="info">
-      <b-navbar-brand href="#">{{
-        isConnected ? getTeam : "Black Box"
-      }}</b-navbar-brand>
+    <b-navbar toggleable="lg" type="light" variant="light">
+      <b-navbar-brand href="#" v-if="isConnected"
+        >{{ getTeam }}
+      </b-navbar-brand>
+      <b-navbar-brand href="#" v-else
+        ><img src="../assets/logo_caisse_noire_navbar.png" />
+      </b-navbar-brand>
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>

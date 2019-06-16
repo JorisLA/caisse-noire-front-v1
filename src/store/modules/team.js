@@ -30,8 +30,7 @@ export const actions = {
         throw error;
       });
   },
-  remove({ commit }, team) {
-    console.log(team);
+  remove({ commit }) {
     commit("DELETE_TEAM");
   }
 };

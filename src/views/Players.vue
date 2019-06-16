@@ -54,6 +54,7 @@
               </b-dropdown-item>
               <b-dropdown-item>
                 <b-button
+                  class="btn-block"
                   v-t="'history'"
                   v-b-modal.player-history-modal
                   @click.stop="editHistory(row.item)"
@@ -62,6 +63,7 @@
               </b-dropdown-item>
               <b-dropdown-item>
                 <b-button
+                  class="btn-block"
                   v-t="'paidFine'"
                   v-if="isBanker == true"
                   variant="danger"
@@ -320,3 +322,11 @@ export default {
   }
 };
 </script>
+
+<style>
+@media (max-width: 768px) {
+  .btn {
+    width: 100%;
+  }
+}
+</style>

@@ -38,27 +38,36 @@
           <template slot="label" slot-scope="row">{{ row.value }}</template>
           <template slot="cost" slot-scope="row">{{ row.value }}</template>
           <template slot="actions" slot-scope="row">
+            <b-dropdown right size="sm">
+              <template slot="button-content">
+                <font-awesome-icon class="fa-1x" icon="ellipsis-h" />
+              </template>
+              <b-dropdown-item>
+                <b-button
+                  v-t="'updateFine'"
+                  v-if="isBanker == true"
+                  size="sm"
+                  variant="success"
+                  v-b-modal.fine-update-modal
+                  @click.stop="editFine(row.item)"
+                  class="mr-1 btn-block"
+                >
+                </b-button>
+              </b-dropdown-item>
+              <b-dropdown-item>
+                <b-button
+                  v-t="'deleteFine'"
+                  variant="danger"
+                  size="sm"
+                  v-if="isBanker == true"
+                  class="mr-1 btn-block"
+                  v-b-modal.fine-delete-modal
+                  @click.stop="editFine(row.item)"
+                >
+                </b-button>
+              </b-dropdown-item>
+            </b-dropdown>
             <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->
-            <b-button
-              v-t="'updateFine'"
-              v-if="isBanker == true"
-              size="sm"
-              variant="success"
-              v-b-modal.fine-update-modal
-              @click.stop="editFine(row.item)"
-              class="mr-1"
-            >
-            </b-button>
-            <b-button
-              v-t="'deleteFine'"
-              variant="danger"
-              size="sm"
-              v-if="isBanker == true"
-              class="mr-1"
-              v-b-modal.fine-delete-modal
-              @click.stop="editFine(row.item)"
-            >
-            </b-button>
           </template>
         </b-table>
         <b-row>
@@ -217,12 +226,10 @@ export default {
   computed: {
     sortOptions() {
       // Create an options list from our fields
-      return this.fields
-        .filter(f => f.sortable)
-        .map(f => ({
-          text: f.label,
-          value: f.key
-        }));
+      return this.fields.filter(f => f.sortable).map(f => ({
+        text: f.label,
+        value: f.key
+      }));
     },
     ...mapGetters("player", ["isBanker"]),
     ...mapState(["player"]),
