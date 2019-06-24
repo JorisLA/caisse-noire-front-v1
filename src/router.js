@@ -16,86 +16,88 @@ const router = new Router({
     {
       path: "/",
       name: "Reception",
-      component: Home
-    },
-    {
-      path: "/players",
-      name: "Players",
-      component: Players,
-      props: true,
-      meta: { requiresAuth: true },
-      beforeEnter(routeTo, routeFrom, next) {
-        if (routeTo.matched.some(record => record.meta.requiresAuth)) {
-          // this route requires auth, check if logged in
-          // if not, redirect to login page.
-          if (!store.getters["player/isConnected"]) {
-            next({
-              path: "/"
-            });
-          } else {
-            store
-              .dispatch("team/fetchTeams")
-              .then(teams => {
-                routeTo.params.teams = teams;
-                next();
-              })
-              .catch(() => {
-                // if (error.response && error.response.status == 404) {
-                //   next({ name: "404", params: { resource: "event" } });
-                // } else {
-                //   next({ name: "network-issue" });
-                // }
-              });
+      component: Home,
+      children: [
+        {
+          path: "/players",
+          name: "Players",
+          component: Players,
+          props: true,
+          meta: { requiresAuth: true },
+          beforeEnter(routeTo, routeFrom, next) {
+            if (routeTo.matched.some(record => record.meta.requiresAuth)) {
+              // this route requires auth, check if logged in
+              // if not, redirect to login page.
+              if (!store.getters["player/isConnected"]) {
+                next({
+                  path: "/"
+                });
+              } else {
+                store
+                  .dispatch("team/fetchTeams")
+                  .then(teams => {
+                    routeTo.params.teams = teams;
+                    next();
+                  })
+                  .catch(() => {
+                    // if (error.response && error.response.status == 404) {
+                    //   next({ name: "404", params: { resource: "event" } });
+                    // } else {
+                    //   next({ name: "network-issue" });
+                    // }
+                  });
+              }
+            } else {
+              next(); // make sure to always call next()!
+            }
           }
-        } else {
-          next(); // make sure to always call next()!
-        }
-      }
-    },
-    {
-      path: "/fines",
-      name: "Fines",
-      component: Fines,
-      meta: { requiresAuth: true },
-      beforeEnter(routeTo, routeFrom, next) {
-        if (routeTo.matched.some(record => record.meta.requiresAuth)) {
-          // this route requires auth, check if logged in
-          // if not, redirect to login page.
-          if (!store.getters["player/isConnected"]) {
-            next({
-              path: "/"
-            });
-          } else {
-            next(); // make sure to always call next()!
+        },
+        {
+          path: "/fines",
+          name: "Fines",
+          component: Fines,
+          meta: { requiresAuth: true },
+          beforeEnter(routeTo, routeFrom, next) {
+            if (routeTo.matched.some(record => record.meta.requiresAuth)) {
+              // this route requires auth, check if logged in
+              // if not, redirect to login page.
+              if (!store.getters["player/isConnected"]) {
+                next({
+                  path: "/"
+                });
+              } else {
+                next(); // make sure to always call next()!
+              }
+            } else {
+              next(); // make sure to always call next()!
+            }
           }
-        } else {
-          next(); // make sure to always call next()!
-        }
-      }
-    },
-    {
-      path: "/statistic",
-      name: "Statistic",
-      component: Statistic,
-      meta: { requiresAuth: true },
-      beforeEnter(routeTo, routeFrom, next) {
-        if (routeTo.matched.some(record => record.meta.requiresAuth)) {
-          // this route requires auth, check if logged in
-          // if not, redirect to login page.
-          if (!store.getters["player/isConnected"]) {
-            next({
-              path: "/"
-            });
-          } else {
-            next(); // make sure to always call next()!
+        },
+        {
+          path: "/statistic",
+          name: "Statistic",
+          component: Statistic,
+          meta: { requiresAuth: true },
+          beforeEnter(routeTo, routeFrom, next) {
+            if (routeTo.matched.some(record => record.meta.requiresAuth)) {
+              // this route requires auth, check if logged in
+              // if not, redirect to login page.
+              if (!store.getters["player/isConnected"]) {
+                next({
+                  path: "/"
+                });
+              } else {
+                next(); // make sure to always call next()!
+              }
+            } else {
+              next(); // make sure to always call next()!
+            }
           }
-        } else {
-          next(); // make sure to always call next()!
         }
-      }
+      ]
     },
     {
-      path: "/404",
+      path: "/notfound",
       name: "404",
       component: NotFound,
       props: true
