@@ -181,9 +181,16 @@
           <b-form-select
             id="form-fine-edit-group"
             v-model="editForm.fine_uuid"
-            :options="player.playerFines"
             class="mb-3"
-          />
+          >
+            <option
+              v-for="fine in getFines"
+              v-bind:key="fine.uuid"
+              v-bind:value="fine.uuid"
+            >
+              {{ fine.label }}
+            </option>
+          </b-form-select>
         </b-form-group>
         <b-button v-t="'submit'" type="submit" variant="primary"> </b-button>
         <b-button v-t="'cancel'" type="reset" variant="danger"> </b-button>
@@ -227,14 +234,17 @@ export default {
     },
     sortOptions() {
       // Create an options list from our fields
-      return this.fields.filter(f => f.sortable).map(f => ({
-        text: f.label,
-        value: f.key
-      }));
+      return this.fields
+        .filter(f => f.sortable)
+        .map(f => ({
+          text: f.label,
+          value: f.key
+        }));
     },
     ...mapState(["player"]),
     ...mapGetters("player", ["isBanker"]),
-    ...mapGetters("team", ["getTeam"])
+    ...mapGetters("fine", ["getFines"]),
+    ...mapGetters("player", ["getPlayers"])
   },
   methods: {
     createFreshPlayerObject() {

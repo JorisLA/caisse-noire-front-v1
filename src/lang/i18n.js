@@ -157,18 +157,18 @@ const messages = {
     links: [
       {
         id: 0,
-        text: "Statistiques",
-        page: "/statistic"
+        text: "Joueurs",
+        path: "players"
       },
       {
         id: 1,
-        text: "Joueurs",
-        page: "/players"
+        text: "Amendes",
+        path: "fines"
       },
       {
         id: 2,
-        text: "Amendes",
-        page: "/fines"
+        text: "Statistiques",
+        path: "statistic"
       }
     ],
     bestContributor: "{first_name} {last_name} avec {total} €",

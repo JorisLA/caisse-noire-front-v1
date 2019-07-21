@@ -61,7 +61,7 @@ export default {
       store
         .dispatch("player/signinPlayer", this.TheSigninUserForm)
         .then(() => {
-          this.$router.push("/players");
+          this.$router.push("/home");
           this.$refs.TheSigninUserModal.hide();
           this.TheSigninUserForm = this.createFreshPlayerObject();
         })

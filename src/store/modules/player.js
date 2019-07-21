@@ -60,12 +60,12 @@ export const actions = {
   fetchPlayers({ commit, dispatch }, path) {
     return EventService.getPlayers(path)
       .then(response => {
-        const items = response.data.players;
-        commit("SET_PLAYERS", items);
+        const players = response.data.players;
+        commit("SET_PLAYERS", players);
         commit("SET_TOTAL_ROWS", response.data.full_count);
         commit("SET_PLAYER_FINES", response.data.fines);
-        commit("SET_LAST_UUID", items[items.length - 1].uuid);
-        return response.data.players;
+        commit("SET_LAST_UUID", players[players.length - 1].uuid);
+        return players;
       })
       .catch(error => {
         const notification = {
@@ -183,5 +183,8 @@ export const getters = {
   },
   getPlayerByUUID: state => uuid => {
     return state.players.find(player => player.uuid === uuid);
+  },
+  getPlayers: state => {
+    return state.players;
   }
 };

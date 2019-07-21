@@ -83,6 +83,20 @@ export default {
       .catch(() => {
         // NProgress.done();
       });
+  },
+  beforeUpdate() {
+    store
+      .dispatch("statistic/fetchStatistics")
+      .then(response => {
+        this.bestContributor.total = response.bestContributor.total;
+        this.bestContributor.first_name = response.bestContributor.first_name;
+        this.bestContributor.last_name = response.bestContributor.last_name;
+        this.mostRecurrentFine.label = response.mostRecurrentFine.label;
+        this.mostRecurrentFine.total = response.mostRecurrentFine.total;
+      })
+      .catch(() => {
+        // NProgress.done();
+      });
   }
 };
 </script>

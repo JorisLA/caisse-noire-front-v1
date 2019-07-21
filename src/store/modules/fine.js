@@ -38,6 +38,9 @@ export const actions = {
   setTotalRows({ commit }, totalRows) {
     commit("SET_TOTAL_ROWS", totalRows);
   },
+  addFineFromPlayer({ commit }, fines) {
+    commit("SET_FINES", fines);
+  },
   addFine({ commit, dispatch }, payload) {
     EventService.addFine(payload)
       .then(() => {
@@ -170,5 +173,8 @@ export const actions = {
 export const getters = {
   getFineByUUID: state => uuid => {
     return state.fines.find(fine => fine.uuid === uuid);
+  },
+  getFines: state => {
+    return state.fines;
   }
 };
