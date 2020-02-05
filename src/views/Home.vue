@@ -34,14 +34,6 @@ export default {
       activeIndex: undefined
     };
   },
-  created() {
-    console.log("HELLO");
-    let path = "/fines?_currentPage=1&_perPage=100&_lastUuid=";
-    store.dispatch("fine/fetchFines", path);
-  },
-  computed: {
-    ...mapGetters("player", ["isConnected"])
-  },
   methods: {
     setActive(index) {
       this.activeIndex = index;

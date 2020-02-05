@@ -86,7 +86,8 @@ const messages = {
     mostRecurrentFine: "{total} with {label} recurrences",
     bestContributorTitle: "Top contributor",
     mostRecurrentFineTitle: "Most recurrent fine",
-    errorMessageLogin: "Wrong email or password"
+    errorMessageLogin: "Wrong email or password",
+    createAccount: "Create an account"
   },
   fr: {
     myAccount: "Mon compte",
@@ -175,7 +176,8 @@ const messages = {
     mostRecurrentFine: "{label} avec {total} récurrences",
     bestContributorTitle: "Meilleur donateur",
     mostRecurrentFineTitle: "Amende la plus récurrente",
-    errorMessageLogin: "Mauvais email ou mot de passe"
+    errorMessageLogin: "Mauvais email ou mot de passe",
+    createAccount: "Creation d'un compte"
   }
 };
 
