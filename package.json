@@ -14,7 +14,7 @@
     "@fortawesome/vue-fontawesome": "^0.1.9",
     "axios": "^0.18.1",
     "bootstrap-vue": "^2.4.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "nprogress": "^0.2.0",
     "vue": "^2.6.11",
     "vue-i18n": "^8.15.3",
